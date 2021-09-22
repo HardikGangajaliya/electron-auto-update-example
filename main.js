@@ -40,8 +40,8 @@ function createWindow() {
         icon: './resources/icon.png'
     });
     // const startURL = 'http://localhost:3001';
-    // const startURL = `https://chat.artoon.in/`;
-    const startURL = `https://chat.ubsapp.com/`;
+    const startURL = `https://chat.artoon.in/`;
+    // const startURL = `https://chat.ubsapp.com/`;
 
     if (agent === 'windows') {
         const badgeOptions = {}
