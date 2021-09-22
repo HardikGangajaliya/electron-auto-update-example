@@ -1,6 +1,6 @@
 {
   "name": "electron-auto-update-example",
-  "version": "1.1.6",
+  "version": "1.1.4",
   "description": "this is just for testing",
   "main": "main.js",
   "repository": {
