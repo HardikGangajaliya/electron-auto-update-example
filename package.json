@@ -1,25 +1,66 @@
 {
   "name": "electron-auto-update-example",
-  "version": "1.0.1",
+  "version": "3.3.3",
   "description": "",
   "main": "main.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/johndyer24/electron-auto-update-example.git"
+    "type": "git",
+    "url": "https://github.com/johndyer24/electron-auto-update-example.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "electron-builder build --mac --win --publish never",
+    "build": "electron-builder",
     "deploy": "electron-builder build --mac --win --publish always"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^5.0.1",
-    "electron-builder": "^20.40.2"
+    "electron": "4",
+    "electron-builder": "^22.1.0"
   },
   "dependencies": {
     "electron-updater": "^4.0.6"
+  },
+  "build": {
+    "productName": "UBS Chat",
+    "appId": "org.chat.ubs",
+    "files": [],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "msi"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "category": "Development"
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "hardikgangajaliya",
+      "repo": "electron-auto-update-example",
+      "private": true
+    }
   }
 }

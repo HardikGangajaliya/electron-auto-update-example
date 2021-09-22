@@ -24,6 +24,7 @@ app.on('ready', () => {
   createWindow();
 });
 
+setInterval(()=>{autoUpdater.checkForUpdatesAndNotify() },5000)
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
