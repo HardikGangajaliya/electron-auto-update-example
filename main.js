@@ -1,15 +1,20 @@
-const {app, Menu, Tray, BrowserWindow, autoUpdater,ipcMain,nativeImage} = require('electron');
+const {app, Menu, Tray, BrowserWindow, ipcMain, nativeImage} = require('electron');
+const {autoUpdater} = require('electron-updater')
 const {setup: setupPushReceiver} = require('electron-push-receiver');
 const path = require("path");
 
 let window = null;
-const agent = 'windows' // windows, mac, linux
+// const agent = 'windows' // windows, mac, linux
 
 let currentBadgeCount = 0;
 let tray = null
-app.whenReady().then(() => {
-    const iconPath = path.join(__dirname,'resources','favicon-16x16.png');
-    tray = new Tray(nativeImage.createFromPath(iconPath));
+
+const trayIcon = nativeImage.createFromPath(
+    path.join(__dirname, 'resources', 'favicon-16x16.png')
+);
+
+const createTray = () => {
+    tray = new Tray(trayIcon);
     const contextMenu = Menu.buildFromTemplate([
         {
             label: 'Open UBS Chat', click: () => {
@@ -17,7 +22,12 @@ app.whenReady().then(() => {
                 if (process.platform === 'darwin') app.dock.show()
             }
         },
-        {label: 'Close UBS Chat', click: () => app.exit()},
+        {
+            label: 'Close UBS Chat', click: () => {
+                app.exit()
+                if (process.platform === 'darwin') app.dock.hide()
+            }
+        },
     ])
     tray.on("click", () => {
         window.show();
@@ -25,7 +35,8 @@ app.whenReady().then(() => {
     })
     tray.setToolTip('UBS Chat App')
     tray.setContextMenu(contextMenu)
-})
+}
+app.whenReady().then(() => createTray())
 
 
 function createWindow() {
@@ -40,10 +51,10 @@ function createWindow() {
         icon: './resources/icon.png'
     });
     // const startURL = 'http://localhost:3001';
-    const startURL = `https://chat.artoon.in/`;
-    // const startURL = `https://chat.ubsapp.com/`;
+    // const startURL = `https://chat.artoon.in/`;
+    const startURL = `https://chat.ubsapp.com/`;
 
-    if (agent === 'windows') {
+    if (process.platform === 'win32') {
         const badgeOptions = {}
         const Badge = require('electron-windows-badge');
         new Badge(window, badgeOptions);
@@ -73,7 +84,7 @@ function createWindow() {
     });
     setupCounter({}, window, setDockBadge);
     window.once('ready-to-show', () => {
-        autoUpdater.checkForUpdates()
+        autoUpdater.checkForUpdatesAndNotify()
     });
 }
 
@@ -87,7 +98,7 @@ const setupCounter = (options, window, setDockBadge) => {
         else setDockBadge('');
     });
 }
-const setDockBadge = agent === 'mac'
+const setDockBadge = process.platform === 'darwin'
     ? (count, bounce) => {
         if (count !== undefined) {
             app.dock.setBadge(count.toString());
@@ -107,6 +118,7 @@ app.on('window-all-closed', () => {
 
 app.on("activate", () => {
     if (window === null) createWindow();
+    else window.show()
 });
 
 // Event handler for asynchronous incoming messages
@@ -116,20 +128,21 @@ ipcMain.on('asynchronous-message', (event, arg) => {
 })
 
 ipcMain.on('app_version', (event) => {
-    console.log('================= app_version  ' ,event)
+    console.log('================= app_version  ', event)
     event.sender.send('app_version', {version: app.getVersion()});
 });
 
 autoUpdater.on('update-available', () => {
-    console.log('================= update_available  ' )
+    console.log('================= update_available  ')
     mainWindow.webContents.send('update_available');
 });
 
 autoUpdater.on('update-downloaded', () => {
-    console.log('================= update-downloaded  ' )
+    console.log('================= update-downloaded  ')
     mainWindow.webContents.send('update_downloaded');
 });
 
 ipcMain.on('restart_app', () => {
+    app.isQuiting = true
     autoUpdater.quitAndInstall();
 });

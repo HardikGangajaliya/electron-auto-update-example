@@ -1,6 +1,6 @@
 {
   "name": "electron-auto-update-example",
-  "version": "1.1.4",
+  "version": "1.1.3",
   "description": "this is just for testing",
   "main": "main.js",
   "repository": {
@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "electron-builder",
+    "build": "electron-builder --publish never",
     "deploy": "electron-builder --publish always"
   },
   "author": "",
@@ -27,27 +27,17 @@
   "build": {
     "productName": "UBS Chat",
     "appId": "org.chat.ubs",
-    "files": [],
+    "files": [
+      "resources",
+      "package.json",
+      "main.js"
+    ],
 
     "mac": {
       "category": "org.chat.ubs",
       "identity": "Apple Development: Alpesh Vaghasiya (LLP74287BT)",
       "target": [
         "dmg"
-      ]
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
       ]
     },
     "win": {
