@@ -58,7 +58,7 @@
     },
     "publish": {
       "provider": "github",
-      "token": "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",
+      "token": "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",
       "owner": "HardikGangajaliya",
       "repo": "electron-auto-update-example",
       "private": true
